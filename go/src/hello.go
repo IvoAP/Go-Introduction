@@ -4,7 +4,11 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"time"
 )
+
+const number_of_monitoring = 5
+const number_of_delay = 5 * time.Second
 
 func main() {
 
@@ -62,15 +66,22 @@ func showMenu() {
 
 func beginMonitoring() {
 	fmt.Println("Monitoring...")
-	site := "https://random-status-code.herokuapp.com/"
 	// using slice(type of array dynamic, because array is static)
-	sites := []string{"https://stackoverflow.com/"}
+	sites := []string{"https://random-status-code.herokuapp.com/"}
 	sites = append(sites, "https://www.google.com.br/")
 	sites = append(sites, "https://www.rocketseat.com.br/")
-	for i, site := range sites {
-		fmt.Println("Im passing in the position: ", i, "whre has the site: ", site)
+	for i := 0; i < number_of_monitoring; i++ {
+		fmt.Println("Monitoring: ", i+1)
+		for i, site := range sites {
+			fmt.Println("Testing site ", i)
+			testSite((site))
+		}
+		time.Sleep(number_of_delay)
 	}
 
+}
+
+func testSite(site string) {
 	response, _ := http.Get(site)
 	if response.StatusCode == 200 {
 		fmt.Println("Site: ", site, " sucess loading")
