@@ -63,6 +63,14 @@ func showMenu() {
 func beginMonitoring() {
 	fmt.Println("Monitoring...")
 	site := "https://random-status-code.herokuapp.com/"
+	// using slice(type of array dynamic, because array is static)
+	sites := []string{"https://stackoverflow.com/"}
+	sites = append(sites, "https://www.google.com.br/")
+	sites = append(sites, "https://www.rocketseat.com.br/")
+	for i, site := range sites {
+		fmt.Println("Im passing in the position: ", i, "whre has the site: ", site)
+	}
+
 	response, _ := http.Get(site)
 	if response.StatusCode == 200 {
 		fmt.Println("Site: ", site, " sucess loading")
