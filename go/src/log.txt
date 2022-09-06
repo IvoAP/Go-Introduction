@@ -1,0 +1,16 @@
+site_false online false
+https://random-status-code.herokuapp.com/ online true
+https://www.google.com.br online true
+https://www.rocketseat.com.br/ online true
+https://random-status-code.herokuapp.com/ online true
+https://www.google.com.br online true
+https://www.rocketseat.com.br/ online true
+https://random-status-code.herokuapp.com/ online true
+https://www.google.com.br online true
+https://www.rocketseat.com.br/ online true
+https://random-status-code.herokuapp.com/ online true
+https://www.google.com.br online true
+https://www.rocketseat.com.br/ online true
+https://random-status-code.herokuapp.com/ online true
+https://www.google.com.br online true
+https://www.rocketseat.com.br/ online true

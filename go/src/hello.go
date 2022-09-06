@@ -1,9 +1,13 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
+	"strconv"
+	"strings"
 	"time"
 )
 
@@ -12,21 +16,14 @@ const number_of_delay = 5 * time.Second
 
 func main() {
 
+	showIntroduction()
+	saveLog("site_false", false)
+
 	for {
-		showIntroduction()
+
 		showMenu()
 
 		comand := readComand()
-
-		// if comand == 1 {
-		// 	fmt.Println("Monitoring")
-		// } else if comand == 2 {
-		// 	fmt.Println("Showing logs")
-		// } else if comand == 3 {
-		// 	fmt.Println("Leaving")
-		// } else {
-		// 	fmt.Println("Error")
-		// }
 
 		switch comand {
 		case 1:
@@ -66,26 +63,69 @@ func showMenu() {
 
 func beginMonitoring() {
 	fmt.Println("Monitoring...")
-	// using slice(type of array dynamic, because array is static)
-	sites := []string{"https://random-status-code.herokuapp.com/"}
-	sites = append(sites, "https://www.google.com.br/")
-	sites = append(sites, "https://www.rocketseat.com.br/")
+
+	sites := readSitesOfFile("sites.txt")
 	for i := 0; i < number_of_monitoring; i++ {
-		fmt.Println("Monitoring: ", i+1)
 		for i, site := range sites {
-			fmt.Println("Testing site ", i)
-			testSite((site))
+			fmt.Println("Testing site ", i, " : ", site)
+			testSite(site)
 		}
+
 		time.Sleep(number_of_delay)
+		fmt.Println("")
 	}
+	fmt.Println("")
 
 }
 
 func testSite(site string) {
 	response, _ := http.Get(site)
 	if response.StatusCode == 200 {
-		fmt.Println("Site: ", site, " sucess loading")
+		saveLog(site, true)
 	} else {
-		fmt.Println("Site: ", site, " error loading")
+		saveLog(site, false)
 	}
+}
+
+func readSitesOfFile(name_file string) []string {
+
+	var sites []string
+	file, error := os.Open(name_file)
+	// file, error := ioutil.ReadFile("sites.txt")
+
+	if error != nil {
+		fmt.Println("There is an Error", error)
+	}
+
+	reader := bufio.NewReader(file)
+
+	for {
+
+		line, error := reader.ReadString('\n')
+		line = strings.TrimSpace(line)
+		sites = append(sites, line)
+		// fmt.Println(line)
+		if error == io.EOF {
+			break
+		}
+
+	}
+
+	file.Close()
+
+	return sites
+}
+
+func saveLog(site string, status bool) {
+	file, error := os.OpenFile("log.txt", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	if error != nil {
+		fmt.Println("There is an error: ", error)
+	}
+	file.WriteString(site + " online " + strconv.FormatBool(status) + "\n")
+
+	sites := readSitesOfFile("log.txt")
+	for i := range sites {
+		fmt.Println(sites[i])
+	}
+	file.Close()
 }
